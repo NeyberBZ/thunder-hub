@@ -1,7 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from "astro";
-import { supabaseServer } from "../../lib/supabase-server";
+import { getSupabaseServer } from "../../lib/supabase-server";
 
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -41,7 +41,7 @@ export const POST: APIRoute = async ({ request }) => {
       console.log("ANTES DE SUBIR");
 
       const { error: uploadError } =
-        await supabaseServer.storage
+        await getSupabaseServer().storage
           .from("cv-candidatos")
           .upload(fileName, cv);
 
@@ -52,7 +52,7 @@ export const POST: APIRoute = async ({ request }) => {
       }
 
       const { data } =
-        supabaseServer.storage
+        getSupabaseServer().storage
           .from("cv-candidatos")
           .getPublicUrl(fileName);
 
@@ -60,7 +60,7 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     const { error } =
-      await supabaseServer
+      await getSupabaseServer()
         .from("candidatos")
         .insert({
           nombres,

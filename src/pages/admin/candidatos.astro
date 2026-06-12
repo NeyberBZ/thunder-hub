@@ -1,6 +1,6 @@
 ---
 import AdminLayout from "../../layouts/AdminLayout.astro";
-import { supabaseServer } from "../../lib/supabase-server";
+import { getSupabaseServer } from "../../lib/supabase-server";
 
 const q = Astro.url.searchParams.get("q") || "";
 
@@ -8,7 +8,7 @@ const estado = Astro.url.searchParams.get("estado") || "";
 
 const puesto = Astro.url.searchParams.get("puesto") || "";
 
-let query = supabaseServer.from("candidatos").select("*").order("created_at", {
+let query = getSupabaseServer().from("candidatos").select("*").order("created_at", {
   ascending: false,
 });
 

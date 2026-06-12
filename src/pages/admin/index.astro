@@ -3,9 +3,9 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
 import StatsCard from "../components/StatsCard.astro";
 
-import { supabaseServer } from "../../lib/supabase-server";
+import { getSupabaseServer } from "../../lib/supabase-server";
 
-const { data: candidatos } = await supabaseServer
+const { data: candidatos } = await getSupabaseServer()
   .from("candidatos")
   .select("estado");
 

@@ -1,7 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from "astro";
-import { supabaseServer } from "../../../../lib/supabase-server";
+import { getSupabaseServer } from "../../../../lib/supabase-server";
 
 export const POST: APIRoute = async ({ params, request }) => {
 
@@ -16,7 +16,7 @@ export const POST: APIRoute = async ({ params, request }) => {
   } = body;
 
   const { data, error } =
-  await supabaseServer
+  await getSupabaseServer()
     .from("candidato_seguimiento")
     .insert({
       candidato_id: candidatoId,
