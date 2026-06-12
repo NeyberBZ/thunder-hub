@@ -1,0 +1,183 @@
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Trabaja con Nosotros</title>
+</head>
+
+<body class="bg-slate-100 min-h-screen">
+
+  <div class="max-w-4xl mx-auto py-12 px-4">
+
+    <div class="text-center mb-10">
+
+      <h1 class="text-4xl font-bold text-slate-900">
+        Trabaja con Nosotros
+      </h1>
+
+      <p class="text-slate-600 mt-3">
+        Completa tus datos y forma parte de nuestro equipo.
+      </p>
+
+    </div>
+
+    <form
+      id="form-postulacion"
+      action="/api/postular"
+      method="POST"
+      enctype="multipart/form-data"
+      class="space-y-8"
+    >
+      <div class="bg-white rounded-2xl shadow p-6">
+
+        <h2 class="text-xl font-semibold mb-6">
+          Datos Personales
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-4">
+
+          <input
+            class="border rounded-lg p-3"
+            type="text"
+            name="nombres"
+            placeholder="Nombres"
+            required
+          />
+
+          <input
+            class="border rounded-lg p-3"
+            type="text"
+            name="apellidos"
+            placeholder="Apellidos"
+            required
+          />
+
+          <input
+            class="border rounded-lg p-3"
+            type="text"
+            name="telefono"
+            placeholder="Teléfono"
+            required
+          />
+
+          <input
+            class="border rounded-lg p-3"
+            type="email"
+            name="email"
+            placeholder="Correo electrónico"
+          />
+
+          <input
+            class="border rounded-lg p-3"
+            type="text"
+            name="dni"
+            placeholder="DNI"
+          />
+
+          <input
+            class="border rounded-lg p-3"
+            type="number"
+            name="edad"
+            placeholder="Edad"
+          />
+
+        </div>
+
+        <input
+          class="border rounded-lg p-3 w-full mt-4"
+          type="text"
+          name="distrito"
+          placeholder="Distrito"
+        />
+
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-6">
+
+        <h2 class="text-xl font-semibold mb-6">
+          Información Laboral
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-4">
+
+          <select
+            name="puesto"
+            class="border rounded-lg p-3"
+          >
+            <option value="">
+              Seleccione un puesto
+            </option>
+
+            <option>Conductor A2B</option>
+            <option>Conductor A3C</option>
+            <option>Supervisor</option>
+            <option>Auxiliar</option>
+
+          </select>
+
+          <input
+            class="border rounded-lg p-3"
+            type="text"
+            name="licencia"
+            placeholder="Número de Licencia"
+          />
+
+          <select
+            name="categoria"
+            class="border rounded-lg p-3"
+          >
+            <option>A1</option>
+            <option>A2B</option>
+            <option>A3A</option>
+            <option>A3C</option>
+          </select>
+
+          <input
+            class="border rounded-lg p-3"
+            type="number"
+            name="experiencia"
+            placeholder="Años de experiencia"
+          />
+
+        </div>
+
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-6">
+
+        <h2 class="text-xl font-semibold mb-4">
+          Curriculum Vitae
+        </h2>
+
+        <input
+          class="w-full border rounded-lg p-4"
+          type="file"
+          name="cv"
+          accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+          required
+        />
+
+        <p class="text-sm text-slate-500 mt-2">
+          Formatos permitidos:
+          PDF, JPG, PNG, DOC y DOCX
+        </p>
+
+      </div>
+
+      <div class="text-center">
+
+        <button
+          type="submit"
+          class="bg-slate-900 hover:bg-slate-800 text-white px-10 py-4 rounded-xl font-semibold transition"
+        >
+          Enviar Postulación
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</body>
+
+</html>

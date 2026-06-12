@@ -1,0 +1,43 @@
+---
+import "../styles/global.css";
+const { title = "Dashboard RRHH" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+
+    <title>{title}</title>
+  </head>
+
+  <body class="bg-slate-100">
+    <div class="flex min-h-screen">
+      <!-- Sidebar -->
+
+      <aside class="w-64 bg-slate-900 text-white p-6">
+        <h1 class="text-2xl font-bold mb-10">Thunder Hub</h1>
+
+        <nav class="space-y-3">
+          <a href="/admin" class="block px-4 py-2 rounded hover:bg-slate-800">
+            Dashboard
+          </a>
+
+          <a
+            href="/admin/candidatos"
+            class="block px-4 py-2 rounded hover:bg-slate-800"
+          >
+            Candidatos
+          </a>
+        </nav>
+      </aside>
+
+      <!-- Contenido -->
+
+      <main class="flex-1 p-8">
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>

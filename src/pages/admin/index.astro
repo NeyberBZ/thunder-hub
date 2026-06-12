@@ -1,0 +1,35 @@
+---
+import AdminLayout from "../../layouts/AdminLayout.astro";
+
+import StatsCard from "../components/StatsCard.astro";
+
+import { supabaseServer } from "../../lib/supabase-server";
+
+const { data: candidatos } = await supabaseServer
+  .from("candidatos")
+  .select("estado");
+
+const total = candidatos?.length || 0;
+
+const nuevos = candidatos?.filter((c) => c.estado === "Nuevo").length || 0;
+
+const contratados =
+  candidatos?.filter((c) => c.estado === "Contratado").length || 0;
+
+const descartados =
+  candidatos?.filter((c) => c.estado === "Descartado").length || 0;
+---
+
+<AdminLayout title="Dashboard RRHH">
+  <h1 class="text-3xl font-bold mb-8">Dashboard RRHH</h1>
+
+  <div class="grid md:grid-cols-4 gap-6">
+    <StatsCard title="Total" value={total} />
+
+    <StatsCard title="Nuevos" value={nuevos} />
+
+    <StatsCard title="Contratados" value={contratados} />
+
+    <StatsCard title="Descartados" value={descartados} />
+  </div>
+</AdminLayout>

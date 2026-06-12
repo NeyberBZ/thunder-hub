@@ -1,0 +1,164 @@
+---
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { supabaseServer } from "../../lib/supabase-server";
+
+const q = Astro.url.searchParams.get("q") || "";
+
+const estado = Astro.url.searchParams.get("estado") || "";
+
+const puesto = Astro.url.searchParams.get("puesto") || "";
+
+let query = supabaseServer.from("candidatos").select("*").order("created_at", {
+  ascending: false,
+});
+
+if (estado) {
+  query = query.eq("estado", estado);
+}
+
+if (puesto) {
+  query = query.eq("puesto_postular", puesto);
+}
+
+const { data: candidatos } = await query;
+
+let candidatosFiltrados = candidatos || [];
+
+if (q) {
+  const texto = q.toLowerCase();
+
+  candidatosFiltrados = candidatosFiltrados.filter(
+    (candidato) =>
+      candidato.nombres?.toLowerCase().includes(texto) ||
+      candidato.apellidos?.toLowerCase().includes(texto) ||
+      candidato.telefono?.includes(texto),
+  );
+}
+---
+
+<AdminLayout title="Candidatos">
+  <h1 class="text-3xl font-bold mb-8">Candidatos</h1>
+
+  <div class="bg-white rounded-xl shadow overflow-hidden">
+    <form method="GET" class="mb-6 flex gap-4 flex-wrap">
+      <input
+        type="text"
+        name="q"
+        value={q}
+        placeholder="Buscar candidato..."
+        class="border rounded-lg px-4 py-2"
+      />
+
+      <select name="estado" class="border rounded-lg px-4 py-2">
+        <option value=""> Todos los estados </option>
+
+        <option value="Nuevo"> Nuevo </option>
+
+        <option value="Contactado"> Contactado </option>
+
+        <option value="Entrevista"> Entrevista </option>
+
+        <option value="Contratado"> Contratado </option>
+
+        <option value="Descartado"> Descartado </option>
+      </select>
+
+      <select name="puesto" class="border rounded-lg px-4 py-2">
+        <option value=""> Todos los puestos </option>
+
+        <option value="Conductor A2B"> Conductor A2B </option>
+
+        <option value="Conductor A3C"> Conductor A3C </option>
+
+        <option value="Supervisor"> Supervisor </option>
+
+        <option value="Auxiliar"> Auxiliar </option>
+      </select>
+
+      <button class="bg-slate-900 text-white px-5 py-2 rounded-lg">
+        Buscar
+      </button>
+    </form>
+    <div class="mb-4 text-gray-600">
+      Resultados:
+      <strong>
+        {candidatosFiltrados.length}
+      </strong>
+    </div>
+    <table class="w-full">
+      <thead class="bg-slate-100">
+        <tr>
+          <th class="p-4 text-left"> Nombre </th>
+
+          <th class="p-4 text-left"> Teléfono </th>
+
+          <th class="p-4 text-left"> Puesto </th>
+
+          <th class="p-4 text-left"> Estado </th>
+
+          <th class="p-4 text-left"> CV </th>
+
+          <th class="p-4 text-left"> Acciones </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {
+          candidatosFiltrados.map((candidato) => (
+            <tr class="border-t">
+              <td class="p-4">
+                {candidato.nombres} {candidato.apellidos}
+              </td>
+
+              <td class="p-4">{candidato.telefono}</td>
+
+              <td class="p-4">{candidato.puesto_postular}</td>
+
+              <td class="p-4">
+                <span
+                  class:list={[
+                    "px-3 py-1 rounded-full text-xs font-semibold",
+
+                    candidato.estado === "Nuevo" && "bg-blue-100 text-blue-700",
+
+                    candidato.estado === "Contactado" &&
+                      "bg-yellow-100 text-yellow-700",
+
+                    candidato.estado === "Entrevista" &&
+                      "bg-purple-100 text-purple-700",
+
+                    candidato.estado === "Contratado" &&
+                      "bg-green-100 text-green-700",
+
+                    candidato.estado === "Descartado" &&
+                      "bg-red-100 text-red-700",
+                  ]}
+                >
+                  {candidato.estado}
+                </span>
+              </td>
+
+              <td class="p-4">
+                <a
+                  href={candidato.cv_url}
+                  target="_blank"
+                  class="text-blue-600"
+                >
+                  Ver CV
+                </a>
+              </td>
+              <td class="p-4">
+                <a
+                  href={`/admin/candidatos/${candidato.id}`}
+                  class="text-blue-600 underline"
+                >
+                  Ver Detalle
+                </a>
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</AdminLayout>
