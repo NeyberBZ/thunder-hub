@@ -2,9 +2,11 @@
 import AdminLayout from "../../../layouts/AdminLayout.astro";
 import { getSupabaseServer } from "../../../lib/supabase-server";
 
+const supabase = getSupabaseServer();
+
 const id = Astro.params.id;
 
-const { data: candidato, error } = await getSupabaseServer()
+const { data: candidato, error } = await supabase
   .from("candidatos")
   .select("*")
   .eq("id", id)
@@ -14,7 +16,7 @@ if (error) {
   throw new Error("Candidato no encontrado");
 }
 
-const { data: timeline } = await getSupabaseServer()
+const { data: timeline } = await supabase
   .from("candidato_seguimiento")
   .select("*")
   .eq("candidato_id", id)

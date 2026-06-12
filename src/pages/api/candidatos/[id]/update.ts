@@ -3,6 +3,8 @@ export const prerender = false;
 import type { APIRoute } from "astro";
 import { getSupabaseServer } from "../../../../lib/supabase-server";
 
+const supabase = getSupabaseServer();
+
 export const POST: APIRoute = async ({ params, request }) => {
 
   const id = params.id;
@@ -37,7 +39,7 @@ export const POST: APIRoute = async ({ params, request }) => {
     updateData.fecha_contacto = fecha_contacto;
 
   const { error } =
-    await getSupabaseServer()
+    await supabase
       .from("candidatos")
       .update(updateData)
       .eq("id", id);

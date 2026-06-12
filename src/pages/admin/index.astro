@@ -5,7 +5,9 @@ import StatsCard from "../components/StatsCard.astro";
 
 import { getSupabaseServer } from "../../lib/supabase-server";
 
-const { data: candidatos } = await getSupabaseServer()
+const supabase = getSupabaseServer();
+
+const { data: candidatos } = await supabase
   .from("candidatos")
   .select("estado");
 
