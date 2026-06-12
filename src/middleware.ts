@@ -1,31 +1,5 @@
-import { defineMiddleware } from "astro:middleware";
+import type { MiddlewareHandler } from "astro";
 
-// export const onRequest =
-//   defineMiddleware(
-//     async (context, next) => {
-
-//       const url =
-//         context.url.pathname;
-
-//       if (
-//         url.startsWith("/admin")
-//       ) {
-
-//         const session =
-//           context.cookies.get(
-//             "sb-access-token"
-//           );
-
-//         if (!session) {
-
-//           return context.redirect(
-//             "/login"
-//           );
-
-//         }
-//       }
-
-//       return next();
-
-//     }
-//   );
+export const onRequest: MiddlewareHandler = async (context, next) => {
+  return next();
+};
