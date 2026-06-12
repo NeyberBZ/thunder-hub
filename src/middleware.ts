@@ -1,31 +1,31 @@
-import { defineMiddleware } from "astro:middleware";
+// import { defineMiddleware } from "astro:middleware";
 
-export const onRequest =
-  defineMiddleware(
-    async (context, next) => {
+// export const onRequest =
+//   defineMiddleware(
+//     async (context, next) => {
 
-      const url =
-        context.url.pathname;
+//       const url =
+//         context.url.pathname;
 
-      if (
-        url.startsWith("/admin")
-      ) {
+//       if (
+//         url.startsWith("/admin")
+//       ) {
 
-        const session =
-          context.cookies.get(
-            "sb-access-token"
-          );
+//         const session =
+//           context.cookies.get(
+//             "sb-access-token"
+//           );
 
-        if (!session) {
+//         if (!session) {
 
-          return context.redirect(
-            "/login"
-          );
+//           return context.redirect(
+//             "/login"
+//           );
 
-        }
-      }
+//         }
+//       }
 
-      return next();
+//       return next();
 
-    }
-  );
+//     }
+//   );
