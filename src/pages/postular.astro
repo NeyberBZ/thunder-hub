@@ -1,7 +1,11 @@
+---
+import "../styles/global.css";
+const { title = "Trabajo con Nosotros" } = Astro.props;
+---
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Trabaja con Nosotros</title>
+  <title>{title}</title>
 </head>
 
 <body class="bg-slate-100 min-h-screen">
