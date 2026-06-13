@@ -22,18 +22,17 @@ if (puesto) {
   query = query.eq("puesto_postular", puesto);
 }
 
-const { data: candidatos } = await query;
+const { data: candidatos, error } = await query;
+
+if (error) {
+  console.error(error);
+}
 
 let candidatosFiltrados = candidatos || [];
 
 if (q) {
-  const texto = q.toLowerCase();
-
-  candidatosFiltrados = candidatosFiltrados.filter(
-    (candidato) =>
-      candidato.nombres?.toLowerCase().includes(texto) ||
-      candidato.apellidos?.toLowerCase().includes(texto) ||
-      candidato.telefono?.includes(texto),
+  query = query.or(
+    `nombres.ilike.%${q}%,apellidos.ilike.%${q}%,telefono.ilike.%${q}%`
   );
 }
 ---
@@ -73,9 +72,13 @@ if (q) {
       />
 
       <select name="estado" class="block w-full px-3 py-2.5 bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-blue-700 focus:border-2 shadow-xs placeholder:text-gray-900">
-        <option value=""> Todos los estados </option>
+        <option value="" selected={estado === ""}>
+          Todos los estados
+        </option>
 
-        <option value="Nuevo"> Nuevo </option>
+        <option value="Nuevo" selected={estado === "Nuevo"}>
+          Nuevo
+        </option>
 
         <option value="Contactado"> Contactado </option>
 
@@ -179,13 +182,44 @@ if (q) {
           {
             candidatosFiltrados.map((candidato) => (
               <tr class="bg-white border-b border-gray-200">
-                <td class="px-6 py-4 font-medium text-heading whitespace-nowrap">
-                  {candidato.nombres} {candidato.apellidos}
+                <td class="px-6 py-4 font-semibold text-heading whitespace-nowrap">
+                  {
+                    (candidato.nombres ?? "").toUpperCase() + " " + (candidato.apellidos ?? "").toUpperCase()
+                  }
                 </td>
 
-                <td class="px-6 py-4">{candidato.telefono}</td>
+                <td class="px-6 py-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="h-5 w-5 inline" viewBox="0 0 24 24"><path id="SVGRepo_iconCarrier" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5.5C3 14.06 9.94 21 18.5 21q.58 0 1.148-.042c.435-.032.653-.048.851-.162a1.06 1.06 0 0 0 .402-.432c.099-.206.099-.446.099-.926v-2.817c0-.404 0-.606-.067-.779a1 1 0 0 0-.277-.396c-.14-.122-.33-.191-.71-.329l-3.206-1.166c-.441-.16-.662-.24-.872-.227a1 1 0 0 0-.513.182c-.171.121-.292.322-.534.725L14 16a12.1 12.1 0 0 1-6-6l1.369-.821c.402-.242.604-.363.725-.534a1 1 0 0 0 .182-.513c.014-.21-.066-.43-.227-.872L8.883 4.053c-.138-.38-.207-.569-.329-.709a1 1 0 0 0-.396-.278C7.985 3 7.783 3 7.379 3H4.562c-.48 0-.72 0-.926.1a1.06 1.06 0 0 0-.432.401c-.114.198-.13.416-.162.85Q3 4.922 3 5.5"/></svg>
+                  {candidato.telefono}
+                </td>
 
-                <td class="px-6 py-4">{candidato.puesto_postular}</td>
+                <td class="px-6 py-4">
+                  {
+                    candidato.puesto_postular === "Conductor A2B" ? (
+                      <span class="inline-flex items-center bg-green-50 border border-green-200 text-green-900 text-xs font-medium px-1.5 py-0.5 rounded-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-4 w-4 inline"><path id="SVGRepo_iconCarrier" fill="currentColor" fill-rule="evenodd" d="M6.788 3c-.819 0-1.494 0-2.044.046-.571.047-1.096.149-1.588.404A4 4 0 0 0 1.45 5.156c-.255.492-.357 1.017-.404 1.588C1 7.294 1 7.969 1 8.788V15a4 4 0 0 0 3.14 3.907A3.001 3.001 0 0 0 9.83 19h5.34a3.001 3.001 0 0 0 5.74-.265 3 3 0 0 0 1.73-3.184l-.14-.922a16 16 0 0 0-2.6-6.616l-.18-.266A4 4 0 0 0 16.414 6H15q-.075 0-.15.006a3.4 3.4 0 0 0-.3-.85 4 4 0 0 0-1.706-1.706c-.492-.255-1.017-.357-1.588-.404C10.706 3 10.03 3 9.212 3zM15 8.716V17h.17a3.001 3.001 0 0 1 5.398-.552 1 1 0 0 0 .095-.598l-.14-.921a14 14 0 0 0-2.275-5.79l-.181-.266A2 2 0 0 0 16.415 8H15zm-2 .114c0-.871 0-1.463-.039-1.92-.037-.446-.104-.673-.186-.832a2 2 0 0 0-.853-.853c-.159-.082-.386-.15-.832-.186C10.634 5 10.042 5 9.17 5H6.83c-.871 0-1.463 0-1.92.039-.446.037-.673.104-.832.186a2 2 0 0 0-.853.853c-.082.159-.15.386-.186.831C3 7.367 3 7.96 3 8.83V15a2 2 0 0 0 1.23 1.846 3 3 0 0 1 5.6.154H13zM8 18a1 1 0 1 0-2 0 1 1 0 0 0 2 0m9 0a1 1 0 1 1 2 0 1 1 0 0 1-2 0" clip-rule="evenodd"/></svg>
+                        Conductor A2B
+                      </span>
+                    ) : candidato.puesto_postular === "Conductor A3C" ? (
+                      <span class="inline-flex items-center bg-blue-50 border border-blue-200 text-blue-900 text-xs font-medium px-1.5 py-0.5 rounded-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-4 w-4 inline"><path id="SVGRepo_iconCarrier" fill="currentColor" fill-rule="evenodd" d="M6.788 3c-.819 0-1.494 0-2.044.046-.571.047-1.096.149-1.588.404A4 4 0 0 0 1.45 5.156c-.255.492-.357 1.017-.404 1.588C1 7.294 1 7.969 1 8.788V15a4 4 0 0 0 3.14 3.907A3.001 3.001 0 0 0 9.83 19h5.34a3.001 3.001 0 0 0 5.74-.265 3 3 0 0 0 1.73-3.184l-.14-.922a16 16 0 0 0-2.6-6.616l-.18-.266A4 4 0 0 0 16.414 6H15q-.075 0-.15.006a3.4 3.4 0 0 0-.3-.85 4 4 0 0 0-1.706-1.706c-.492-.255-1.017-.357-1.588-.404C10.706 3 10.03 3 9.212 3zM15 8.716V17h.17a3.001 3.001 0 0 1 5.398-.552 1 1 0 0 0 .095-.598l-.14-.921a14 14 0 0 0-2.275-5.79l-.181-.266A2 2 0 0 0 16.415 8H15zm-2 .114c0-.871 0-1.463-.039-1.92-.037-.446-.104-.673-.186-.832a2 2 0 0 0-.853-.853c-.159-.082-.386-.15-.832-.186C10.634 5 10.042 5 9.17 5H6.83c-.871 0-1.463 0-1.92.039-.446.037-.673.104-.832.186a2 2 0 0 0-.853.853c-.082.159-.15.386-.186.831C3 7.367 3 7.96 3 8.83V15a2 2 0 0 0 1.23 1.846 3 3 0 0 1 5.6.154H13zM8 18a1 1 0 1 0-2 0 1 1 0 0 0 2 0m9 0a1 1 0 1 1 2 0 1 1 0 0 1-2 0" clip-rule="evenodd"/></svg>
+                        Conductor A3C
+                      </span>
+                    ) : candidato.puesto_postular === "Supervisor" ? (
+                      <span class="inline-flex items-center bg-purple-50 border border-purple-200 text-purple-900 text-xs font-medium px-1.5 py-0.5 rounded-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="h-4 w-4 inline" viewBox="0 0 24 24"><path id="SVGRepo_iconCarrier" fill="currentColor" fill-rule="evenodd" d="M10.663 3.25h2.733c1.081 0 1.948 0 2.658.07.735.073 1.36.225 1.948.562.587.336 1.04.8 1.486 1.403.432.583.89 1.34 1.464 2.29l.72 1.192c.48.793.869 1.437 1.133 1.996.276.584.445 1.13.445 1.737s-.169 1.153-.445 1.737c-.264.56-.653 1.203-1.133 1.996l-.72 1.192c-.574.95-1.032 1.707-1.465 2.29-.446.602-.898 1.067-1.485 1.403s-1.213.489-1.948.562c-.71.07-1.576.07-2.658.07h-2.733c-1.889 0-3.385 0-4.556-.163-1.207-.168-2.179-.521-2.942-1.31-.76-.786-1.098-1.78-1.258-3.017-.157-1.206-.157-2.748-.157-4.705v-.11c0-1.957 0-3.5.157-4.705.16-1.236.498-2.23 1.258-3.017.763-.789 1.735-1.142 2.942-1.31 1.171-.163 2.667-.163 4.556-.163m-4.35 1.648c-1.03.144-1.63.413-2.07.868-.444.46-.709 1.089-.849 2.167-.143 1.098-.144 2.543-.144 4.567s.001 3.469.144 4.567c.14 1.078.405 1.708.85 2.167.44.455 1.038.724 2.07.867 1.056.147 2.447.149 4.407.149h2.637c1.128 0 1.92 0 2.548-.063.611-.06 1.008-.175 1.35-.37.343-.197.65-.487 1.027-.995.385-.52.807-1.216 1.404-2.205l.681-1.126c.505-.835.853-1.413 1.082-1.896.22-.466.3-.787.3-1.095s-.08-.629-.3-1.095c-.229-.483-.577-1.061-1.082-1.896l-.68-1.126c-.598-.988-1.02-1.685-1.405-2.205-.377-.508-.684-.798-1.027-.994s-.739-.31-1.35-.371c-.628-.062-1.42-.063-2.548-.063h-2.637c-1.96 0-3.351.002-4.407.148m1.187 2.347a.75.75 0 0 1 .75.75V17a.75.75 0 0 1-1.5 0V7.995a.75.75 0 0 1 .75-.75" clip-rule="evenodd"/></svg>
+                        Supervisor
+                      </span>
+                    ) : candidato.puesto_postular === "Auxiliar" ? (
+                      <span class="inline-flex items-center bg-yellow-50 border border-yellow-200 text-yellow-900 text-xs font-medium px-1.5 py-0.5 rounded-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="h-4 w-4 inline" viewBox="0 0 24 24"><path id="SVGRepo_iconCarrier" fill="currentColor" fill-rule="evenodd" d="M10.663 3.25h2.733c1.081 0 1.948 0 2.658.07.735.073 1.36.225 1.948.562.587.336 1.04.8 1.486 1.403.432.583.89 1.34 1.464 2.29l.72 1.192c.48.793.869 1.437 1.133 1.996.276.584.445 1.13.445 1.737s-.169 1.153-.445 1.737c-.264.56-.653 1.203-1.133 1.996l-.72 1.192c-.574.95-1.032 1.707-1.465 2.29-.446.602-.898 1.067-1.485 1.403s-1.213.489-1.948.562c-.71.07-1.576.07-2.658.07h-2.733c-1.889 0-3.385 0-4.556-.163-1.207-.168-2.179-.521-2.942-1.31-.76-.786-1.098-1.78-1.258-3.017-.157-1.206-.157-2.748-.157-4.705v-.11c0-1.957 0-3.5.157-4.705.16-1.236.498-2.23 1.258-3.017.763-.789 1.735-1.142 2.942-1.31 1.171-.163 2.667-.163 4.556-.163m-4.35 1.648c-1.03.144-1.63.413-2.07.868-.444.46-.709 1.089-.849 2.167-.143 1.098-.144 2.543-.144 4.567s.001 3.469.144 4.567c.14 1.078.405 1.708.85 2.167.44.455 1.038.724 2.07.867 1.056.147 2.447.149 4.407.149h2.637c1.128 0 1.92 0 2.548-.063.611-.06 1.008-.175 1.35-.37.343-.197.65-.487 1.027-.995.385-.52.807-1.216 1.404-2.205l.681-1.126c.505-.835.853-1.413 1.082-1.896.22-.466.3-.787.3-1.095s-.08-.629-.3-1.095c-.229-.483-.577-1.061-1.082-1.896l-.68-1.126c-.598-.988-1.02-1.685-1.405-2.205-.377-.508-.684-.798-1.027-.994s-.739-.31-1.35-.371c-.628-.062-1.42-.063-2.548-.063h-2.637c-1.96 0-3.351.002-4.407.148m1.187 2.347a.75.75 0 0 1 .75.75V17a.75.75 0 0 1-1.5 0V7.995a.75.75 0 0 1 .75-.75" clip-rule="evenodd"/></svg>
+                        Auxiliar
+                      </span>
+                    ) : (
+                      <span>{candidato.puesto_postular}</span>
+                    )
+                  }
+                </td>
 
                 <td class="px-6 py-4">
                   <span
@@ -240,7 +274,7 @@ if (q) {
     <div class="md:hidden space-y-4">
       {
         candidatosFiltrados.map((candidato) => (
-          <div class="bg-white rounded-xl shadow p-4 border">
+          <div class="bg-gray-50 rounded-xl shadow p-4 border border-gray-200">
 
             <div class="flex justify-between items-start mb-3">
               <div>
